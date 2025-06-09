@@ -29,9 +29,5 @@ namespace Malshinon.Table_Pepole
             NumReports = numReports;
             NumMentions = numMentions;
         }
-        
-        
-        //אם צריך מתודה SELECT ALL DB
-       
     }
 }

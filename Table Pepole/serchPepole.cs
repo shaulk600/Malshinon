@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Malshinon.Table_Pepole
 {
@@ -14,6 +13,7 @@ namespace Malshinon.Table_Pepole
         private string PathDataBase = "";
         private string AccessDB = "server=127.0.0.1;user=root;password=;database=Malshinon";
 
+      
         public void SearchByName(string name)
         {
             List<Dictionary<string, int>> data = new List<Dictionary<string, int>>();
@@ -34,7 +34,7 @@ namespace Malshinon.Table_Pepole
         }
         
 
-        public 
+
         private int SearchTheNameInList(List<Dictionary<string, int>> data , string name)
         {
             for(int i = 0; i<data.Count; i++)
@@ -55,8 +55,6 @@ namespace Malshinon.Table_Pepole
             }
             return -1;
         }
-        
-       
-
+     
     }
 }

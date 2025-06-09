@@ -1,5 +1,9 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace Malshinon.Table_Pepole
@@ -8,6 +12,7 @@ namespace Malshinon.Table_Pepole
     {
         public static MySqlConnection ObjToConnection;
         public static string AccessDB = "server=127.0.0.1;user=root;password=;database=Malshinon";
+
 
         public static bool IsOpen()
         {
@@ -71,8 +76,8 @@ namespace Malshinon.Table_Pepole
 
                 string selecting = "SELECT * FROM Pepole";
                 response = new MySqlCommand(selecting, ObjToConnection);
-
-                reader = response.ExecuteReader(); // ואז תקלויט את הערכים ממה שכבר פתוח  
+              
+                reader = response.ExecuteReader(); // ואז תקלויט את הערכים ממה שכבר פתוח
 
                 while (reader.Read())
                 {
@@ -82,7 +87,6 @@ namespace Malshinon.Table_Pepole
                     string firstName = reader.GetString("first_name");
                     string lastName = reader.GetString("last_name");
 
-//vhhhhh
                     data.Add($"{firstName}-{lastName}", idPepole);
                     toReturn.Add(data);
                 }
@@ -146,10 +150,5 @@ namespace Malshinon.Table_Pepole
             }
             return a;
         }
-        public void all()
-        {
-
-        }
-
     }
 }
