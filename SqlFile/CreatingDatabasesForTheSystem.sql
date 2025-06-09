@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS IntelReports  ;
 CREATE TABLE Pepole
 (
     Id_pepole INT PRIMARY KEY AUTO_INCREMENT ,
-    first_name VARCHAR(100) ,
+    first_name VARCHAR(100) UNIQUE ,
     last_name VARCHAR(100) , 
     secret_code VARCHAR (20) UNIQUE ,
     type_pepole ENUM ("reporter", "target", "both", "potential_agent") ,
