@@ -29,54 +29,5 @@ namespace Malshinon.Table_Pepole
             NumReports = numReports;
             NumMentions = numMentions;
         }
-        
-        
-        //אם צריך מתודה SELECT ALL DB
-        public List<Pepole> DalSerch()
-        {
-            List<Pepole> a = new List<Pepole>();
-            MySqlCommand response = null;
-            //אובייקט החזרת הערך 
-            MySqlDataReader reader = null;
-
-            try
-            {
-                openConnection();
-
-                string selecting = "SELECT * FROM Pepole";
-                response = new MySqlCommand(selecting, ObjToConnection);
-
-                reader = response.ExecuteReader(); // ואז תקלויט את הערכים ממה שכבר פתוח
-
-                while (reader.Read())
-                {
-                    int idPepole = reader.GetInt32("Id_pepole");
-                    string firstName = reader.GetString("first_name");
-                    string lastName = reader.GetString("last_name");
-                    string secretCode = reader.GetString("secret_code");
-                    string typePepole = reader.GetString("type_pepole");
-                    int numReports = reader.GetInt32("num_reports");
-                    int numMentions = reader.GetInt32("num_mentions");
-                    Pepole temp = new Pepole(idPepole, firstName, lastName, secretCode, typePepole, numReports, numMentions);
-                    a.Add(temp);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error while fetching agents: {ex.Message}");
-            }
-
-            //אולי פונקצייה אחרת- ואז נפנה אליה גם בתקלה וגם בלא
-            finally
-            {
-                if (reader != null && !reader.IsClosed)
-                    reader.Close();
-
-                closeConnection();
-
-            }
-            return a;
-        }
     }
 }

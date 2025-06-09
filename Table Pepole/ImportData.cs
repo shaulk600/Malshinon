@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +13,16 @@ namespace Malshinon.Table_Pepole
         public static MySqlConnection ObjToConnection;
         public static string AccessDB = "server=127.0.0.1;user=root;password=;database=Malshinon";
 
-        public static void startPlan()
+
+        public static bool IsOpen()
         {
             try
             {
                 openConnection();
+                if (ObjToConnection != null && ObjToConnection.State == System.Data.ConnectionState.Open)
+                {
+                    return true;
+                }
             }
             catch (MySqlException ex)
             {
@@ -27,6 +32,7 @@ namespace Malshinon.Table_Pepole
             {
                 Console.WriteLine($"General Error: {ex.Message} - class ImportData");
             }
+            return false;
         }
 
         public static MySqlConnection openConnection()
@@ -70,7 +76,7 @@ namespace Malshinon.Table_Pepole
 
                 string selecting = "SELECT * FROM Pepole";
                 response = new MySqlCommand(selecting, ObjToConnection);
-
+              
                 reader = response.ExecuteReader(); // ואז תקלויט את הערכים ממה שכבר פתוח
 
                 while (reader.Read())
@@ -97,8 +103,52 @@ namespace Malshinon.Table_Pepole
                 closeConnection();
 
             }
-            
             return toReturn;
+        }
+
+
+        public static List<Pepole> DalAll()
+        {
+            List<Pepole> a = new List<Pepole>();
+            MySqlCommand response = null;
+            //אובייקט החזרת הערך 
+            MySqlDataReader reader = null;
+
+            try
+            {
+                openConnection();
+
+                string selecting = "SELECT * FROM Pepole";
+                response = new MySqlCommand(selecting, ObjToConnection);
+
+                reader = response.ExecuteReader(); // ואז תקלויט את הערכים ממה שכבר פתוח
+
+                while (reader.Read())
+                {
+                    int idPepole = reader.GetInt32("Id_pepole");
+                    string firstName = reader.GetString("first_name");
+                    string lastName = reader.GetString("last_name");
+                    string secretCode = reader.GetString("secret_code");
+                    string typePepole = reader.GetString("type_pepole");
+                    int numReports = reader.GetInt32("num_reports");
+                    int numMentions = reader.GetInt32("num_mentions");
+                    Pepole temp = new Pepole(idPepole, firstName, lastName, secretCode, typePepole, numReports, numMentions);
+                    a.Add(temp);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while fetching agents: {ex.Message}");
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
+
+                closeConnection();
+            }
+            return a;
         }
     }
 }
