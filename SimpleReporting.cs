@@ -16,10 +16,11 @@ namespace Malshinon
     internal static class SimpleReporting
     {
 
-        public static int findPerson(string firstName, string lastName)
+        public static void findPerson(string firstName, string lastName)
         {
             int idPepole = -1;
             string pathToSql = "server=localhost;user=root;password=;database=malshinon";
+            //string pathToSql = AcountToDB.GetPathDataBase();
 
             try
             {
@@ -28,67 +29,68 @@ namespace Malshinon
                     connection.Open();
                     string q = $"SELECT * FROM pepole WHERE first_name = '{firstName}'";
                     var cmd = new MySqlCommand(q, connection);
-                    var reader = cmd.ExecuteReader();
-                    //Console.WriteLine($"ok => {first_name}");
-                    if ( ! reader.Read())
-                    {
-                        addPerson(firstName, lastName);
-                    }
-                    idPepole = reader.GetInt32("Id_pepole");
+                    
+                    //שולח לאימות נתונים מול database
+                    DBNameCheck(firstName, lastName, cmd);    
                 }
-
-                if (idPepole == -1) 
-                { 
-                    addPerson(firstName, lastName);
-                    idPepole = findPerson(firstName, lastName);
-                }
-                Console.WriteLine("findPerson - end");
-                return idPepole;
-
             }
             catch (SqlException ex)
             {
                 Console.WriteLine("MySQL Error: " + ex.Message);
-                return idPepole;
+                
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General Error: " + ex.Message);
-                return idPepole;
-            }
-            
-            
+                
+            } 
         }
 
+        public static void DBNameCheck(string firstName, string lastName, MySqlCommand cmd)
+        {
+            var reader = cmd.ExecuteReader();
+            //שלב החלוקה 
+            if (!reader.Read())
+            {
+                addPerson(firstName, lastName);
+                findPerson(firstName, lastName);
+                return;
+            }
+            else
+            {
+                //יצירת אובייקט לנדידת נתונים 
+                DBPepole personCurrect = new DBPepole();
+                personCurrect.Id_Pepole = reader.GetInt32("Id_pepole");
+                personCurrect.FirstName = reader.GetString("first_name");
+                personCurrect.LastName = reader.GetString("last_name");
+                personCurrect.SecretCode = reader.GetString("secret_code");
+                personCurrect.TypePepole = reader.GetString("type_pepole");
+                personCurrect.NumReports = reader.GetInt32("num_reports");
+                personCurrect.NumMentions = reader.GetInt32("num_mentions");
+                return;
+            }
+        }
         public static void addPerson(string firstName, string lastName)
         {
             Guid g = Guid.NewGuid();
             string SecretCode = Convert.ToBase64String(g.ToByteArray()).Substring(1, 8);
 
+            Console.WriteLine("addPerson - end ");
             addPersonToDB(firstName, lastName, SecretCode);
-
-            //DBPepole person = new DBPepole(firstName, lastName, SecretCode);
-            Console.WriteLine("addPerson - end");
 
         }
         public static void addPersonToDB(string firstName, string lastName, string SecretCode)
         {
             string pathToSql = "server=127.0.0.1;user=root;password=;database=malshinon";
+            //string pathToSql = AcountToDB.GetPathDataBase();
 
             try
             {
-                //MySqlConnection connectionSql = new MySqlConnection(pathToSql); // מכיוון שאני יוצר אותו בתוכנית - מספיק לי היצירה - אם ארצה שיהיה קיים בקלאס נפרד צריך להגדיר אותו בכל סוף כ-NULL
-                //if (connectionSql.State != System.Data.ConnectionState.Open)
-                //{
-                //    connectionSql.Open();
-                //    Console.WriteLine("connectionSql - open");
-                //}
-
                 string typePepole = "reporter";
                 int numReports = 0;
                 int numMentions = 0;
 
-                //צריך לשלוח אל וולידצייה
+                //צריך לשלוח אל וולידציה - ליצור מתודת וולידציה 
                 using (var connection = new MySqlConnection(pathToSql))
                 {
                     connection.Open();
@@ -97,29 +99,38 @@ namespace Malshinon
                     var cmd = new MySqlCommand(q, connection);
 
                     cmd.ExecuteReader();
-                    //var rowsAffect = cmd.ExecuteNonQuery();
-                    //Console.WriteLine($"{rowsAffect} rows inserted successfully");
                 }
-
-                //string q = $"INSERT INTO Pepole (first_name, last_name, secret_code, type_pepole, num_reports, num_mentions) VALUES ('{firstName}', '{lastName}', '{typePepole}', {numReports}, {numMentions} )"; //רק אם אני שולח string אני חייב לשים גרשיים - באינט לא
-
-                //var cmdA = new MySqlCommand(q, connectionSql);
-
-                //int rowsAffectA = cmd.ExecuteNonQuery();
-                //Console.WriteLine($"{rowsAffect} rows inserted successfully");
-                //connectionSql.Close();
-                //Console.WriteLine("connectionSql - close");
-
                 Console.WriteLine("addPersonToDB - end");
+                
+                //צריך ליצור דיווח
+                // class login
+                Console.WriteLine("a- create LogIN");
             }
+
             catch (SqlException ex)
             {
                 Console.WriteLine("MySQL Error: " + ex.Message);
+                Console.WriteLine("NOT Create in Table pepole - Check value to DataBase");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General Error: " + ex.Message);
+                Console.WriteLine("NOT Create in Table Pepole - Check if value is not empty");
             }
+        }
+
+        public static void AddingPointsIsPepole(DBPepole p , string size = "T")
+        {
+            if(size.Contains("R"))
+            {
+                ++p.NumReports;
+            }
+            if (size.Contains("T"))
+            {
+                ++p.NumMentions;
+            }
+
+
         }
     }
 }
