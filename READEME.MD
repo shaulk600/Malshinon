@@ -1,1 +1,2 @@
 The Projact is Malshinin 
+Today 12-06-25 Commit beginning of the day - Update: I made a lot of changes and new files in the project: I made the AcountToDB class to provide an access path to the DB through a variable, another update: I made the SimpleReporting class to run code that connects to the DB in the simplest way possible - I plan to later put it into the DAL-Agent class, another update 11:45: I made the TEST folder for running tests for the program in the Uniq Class 
