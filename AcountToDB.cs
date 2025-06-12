@@ -43,29 +43,36 @@ namespace Malshinon
         /// <param name="password"></param>
         public void UpdatePathDataBase(string value, string password)
         {
-            bool f = true;
-            while (f || (value != "" && password != "") )
+            if (instance != null)
             {
-                if ((!string.IsNullOrEmpty(value)) && (!string.IsNullOrEmpty(password)))
+                bool f = true;
+                while (f || (value != "" && password != ""))
                 {
-                    if (password == "1234")
+                    if ((!string.IsNullOrEmpty(value)) && (!string.IsNullOrEmpty(password)))
                     {
-                        //AcountToDB.PathDataBase = value; // אפשר לכתוב כך ואפשר כך
-                        if (value.Contains("server="))
+                        if (password == "1234")
                         {
-                            this.PathDataBase = $"server=127.0.0.1;user=root;password=;database={value}";
+                            //AcountToDB.PathDataBase = value; // אפשר לכתוב כך ואפשר כך
+                            if (value.Contains("server="))
+                            {
+                                this.PathDataBase = $"server=127.0.0.1;user=root;password=;database={value}";
+                            }
+                            else
+                            {
+                                this.PathDataBase = value;
+                            }
+                            f = false;
                         }
-                        else
-                        {
-                            this.PathDataBase = value;                           
-                        }
-                        f = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Enter a path value and password to access the system.");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("Enter a path value and password to access the system.");
-                }
+            }
+            else
+            {
+                Console.WriteLine("Error: instance = null");
             }
         }
 
@@ -75,8 +82,25 @@ namespace Malshinon
         /// </summary>
         /// <returns>String Path</returns>
         //במקום לכתוב return או לשאול האם זה null אפשר לכתוב ככה
-        public string GetPathDataBase() => string.IsNullOrEmpty(PathDataBase) ? "" : PathDataBase;
-
+        public string GetPathDataBase()
+        {
+            if(instance != null)
+            {
+                if (!string.IsNullOrEmpty(this.PathDataBase))
+                {
+                    return this.PathDataBase;
+                }
+                else
+                {                  
+                    return "";
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: instance = null");
+                return "";
+            }
+        }// => instance != null && !string.IsNullOrEmpty(PathDataBase) ? PathDataBase : "";
     }
 }
 
