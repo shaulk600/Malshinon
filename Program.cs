@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Malshinon;
-using Malshinon.Test;
+using Malshinon.DAL;
 using Malshinon.Table_Pepole;
-using Malshinon.Menu;
-using MySql.Data.MySqlClient;
+
+using Malshinon.Test;
+
+using MySql.Data;
 
 
 namespace Malshinon
@@ -17,7 +18,7 @@ namespace Malshinon
     {
         static void Main(string[] args)
         {
-
+            TestSerchPepole.TestSearch();
         }
     }
 }
